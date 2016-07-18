@@ -25,12 +25,16 @@ if __name__ == '__main__':
 
 	output_filename = "output_newwords/vecs_en.csv"
 	log_filename1 = "output_newwords/log/bad_list_en.txt"
-	log_filename2 = "output_newwords/log/getVector_log.txt"
+	log_filename2 = "output_newwords/log/getVector_log_en.txt"
 
 	split_file(input_filename, input_newword_name_en, input_newword_name_jp)
 	
-	# getVector.retrieve_vec(model_name=input_modelname_en, input_filename=input_newword_name_en, 
-	#	output_filename=output_filename, log_filename1=log_filename1, log_filename2=log_filename2)
+	getVector.retrieve_vec(model_name=input_modelname_en, input_filename=input_newword_name_en, 
+		output_filename=output_filename, log_filename1=log_filename1, log_filename2=log_filename2)
+
+	output_filename = "output_newwords/vecs_jp.csv"
+	log_filename1 = "output_newwords/log/bad_list_jp.txt"
+	log_filename2 = "output_newwords/log/getVector_log_jp.txt"
 
 	getVector.retrieve_vec_jp(model_name=input_modelname_jp, input_filename=input_newword_name_jp, 
 		output_filename=output_filename, log_filename1=log_filename1, log_filename2=log_filename2)
