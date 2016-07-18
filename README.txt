@@ -11,3 +11,4 @@
 	. statistic.py   通过更改k来确定cluster数
 . 添加了getVector.py
 	来快速查找一个单词对应的word2vec向量
+	添加了getVector.retrieve_vec() 函数
