@@ -57,6 +57,8 @@ def retrieve_vec(model_name, input_filename, output_filename,
 	# Start retreiving vectors
 	with open(input_filename) as vocab_file:
 		for index,vocab in enumerate(vocab_file):
+			# debug
+			print index
 
 			rawVoc=vocab.rstrip() # remove all '\n' and '\r'
 			vocab=rawVoc.lower()			
@@ -150,6 +152,56 @@ def retrieve_vec(model_name, input_filename, output_filename,
 
 		output_unmatch.close()
 		logout.close()
+
+def retrieve_vec_jp(model_name, input_filename, output_filename, 
+	log_filename1, log_filename2):
+	
+	# print "!!This function can only be run on the Unix system equiped with MeCab!!"
+	# import MeCab
+
+	# output_filename1=r'output_newwords/log/tag_mecab_jp.txt'
+	# output_filename2=r'output_newwords/log/cleaned_tag_jp.txt'
+
+	# output1=open(output_filename1,'w')
+	# output2=open(output_filename2,'w')
+
+	# tagger = MeCab.Tagger("-Ochasen -d /usr/local/lib/mecab/dic/mecab-ipadic-neologd/")
+
+	# with open(input_filename) as data_file:
+	# 	for (index,line) in enumerate(data_file):
+	# 		#line=line.encode('utf-8','ignore')  # NO NEED!
+	# 		node = tagger.parseToNode(line)
+	# 		#index=0
+	# 		line_tagged=[]
+	# 		newLine=[]
+	# 		while node:
+	# 			word_tagged=(node.surface,node.feature)
+	# 			line_tagged.append(word_tagged)
+	# 			list_feature=node.feature.split(',')
+	# 			if '動詞' in list_feature[0] or '名詞' in list_feature[0] or '接頭詞' in list_feature[0]:
+	# 				if '数' not in list_feature[1] and '接尾' not in list_feature[1]:
+	# 					if '*' not in list_feature[6]:
+	# 						newLine.append(list_feature[6])
+	# 			# if index==999:
+	# 			# 	print list_feature[0]
+	# 			node=node.next
+
+	# 		output2.write(' '.join(newLine)+'\n')
+	# 		# # debug
+	# 		# print "the tagged new line is ",newLine
+
+	# 		output1.write('\n'.join('_'.join(t) for t in line_tagged))
+	# 		output1.write('\n\n\n')
+
+	# # 以上代码有bug，如果重新启用，一定要注意！！！
+
+	# output1.close()
+	# output2.close()
+
+	# 此阶段将人工手动删除 する 结尾的单词，之后可能会重新启用mecab
+
+	retrieve_vec(model_name, input_filename, output_filename, 
+	log_filename1, log_filename2)
 
 
 if __name__ == '__main__':

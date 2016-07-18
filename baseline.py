@@ -29,7 +29,11 @@ if __name__ == '__main__':
 
 	split_file(input_filename, input_newword_name_en, input_newword_name_jp)
 	
-	getVector.retrieve_vec(model_name=input_modelname_en, input_filename=input_newword_name_en, 
+	# getVector.retrieve_vec(model_name=input_modelname_en, input_filename=input_newword_name_en, 
+	#	output_filename=output_filename, log_filename1=log_filename1, log_filename2=log_filename2)
+
+	getVector.retrieve_vec_jp(model_name=input_modelname_jp, input_filename=input_newword_name_jp, 
 		output_filename=output_filename, log_filename1=log_filename1, log_filename2=log_filename2)
+
 
 	print("--- %s seconds ---" % (time.time() - start_time))
