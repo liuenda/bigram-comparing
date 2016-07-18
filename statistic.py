@@ -63,56 +63,58 @@ def getNSum(combin,N):
 	return sum
 
 
-merge(k)
+if __name__ =="__main__":
 
-input_filename='output/merge'+str(k)+'.csv'
-df=pd.read_csv(input_filename)
-counter=[]
-for value in range(1,k+1):
-	sub_df = df.ix[(df['en10']==value)]
-	ser=sub_df['jp10']
-	count=ser.value_counts()
-	#print "for the gourp",value,"they have:"
-	#print count
-	counter.append(count)
-#print counter
+	merge(k)
 
-#The totla number of word for each JP group
-N=df.jp10.value_counts()
+	input_filename='output/merge'+str(k)+'.csv'
+	df=pd.read_csv(input_filename)
+	counter=[]
+	for value in range(1,k+1):
+		sub_df = df.ix[(df['en10']==value)]
+		ser=sub_df['jp10']
+		count=ser.value_counts()
+		#print "for the gourp",value,"they have:"
+		#print count
+		counter.append(count)
+	#print counter
 
-max_sum=0
-for N_en in range(1,k+1):
-	NC=counter[N_en-1]
-	N_en_counter=df.en10.value_counts()
-	N_en_count=N_en_counter[N_en]
-	print "NC in group ",N_en,"is \n",NC
-	NC_name_list=NC.index.values
-	
-	#Get the combination list
-	combin_list=[]
-	for i in range(1,len(NC)+1):
-		combin_list+=list(combinations(NC_name_list, i))
-	print "size of the combination list is in group ",N_en," is ",len(combin_list)
+	#The totla number of word for each JP group
+	N=df.jp10.value_counts()
 
-	#map() is not useful in this case although it is meaningful
-	NC_sum_list=[getNCSum(x,NC) for x in combin_list]
-	
-	#PLEASE NOTE: DO NOT forget to add the number of the EN cluster (only 1)
-	N_sum_list=[getNSum(x,N)+N_en_count for x in combin_list]
+	max_sum=0
+	for N_en in range(1,k+1):
+		NC=counter[N_en-1]
+		N_en_counter=df.en10.value_counts()
+		N_en_count=N_en_counter[N_en]
+		print "NC in group ",N_en,"is \n",NC
+		NC_name_list=NC.index.values
+		
+		#Get the combination list
+		combin_list=[]
+		for i in range(1,len(NC)+1):
+			combin_list+=list(combinations(NC_name_list, i))
+		print "size of the combination list is in group ",N_en," is ",len(combin_list)
 
-	sim_list=map(lambda x,y:2*x/y,NC_sum_list,N_sum_list)
-	#sim_list=2*NC_sum_list/N_sum_list
-	#sim_list=[2*a/b for a,b in zip(NC_sum_list,N_sum_list)]
-	#print sim_list
+		#map() is not useful in this case although it is meaningful
+		NC_sum_list=[getNCSum(x,NC) for x in combin_list]
+		
+		#PLEASE NOTE: DO NOT forget to add the number of the EN cluster (only 1)
+		N_sum_list=[getNSum(x,N)+N_en_count for x in combin_list]
 
-	#Find the index of maximu similarity
-	sim_bestIndex=sim_list.index(max(sim_list))
-	print "the best combination similiar to EN group ",N_en,"is ",combin_list[sim_bestIndex]
-	print "with the similarity of ",max(sim_list)
-	print "-----------------"
- 	max_sum+=max(sim_list)
-	#Create a DataFrame for print
-	#df_result=pd.DataFrame()
-print "Average similairty is: ",max_sum/k
+		sim_list=map(lambda x,y:2*x/y,NC_sum_list,N_sum_list)
+		#sim_list=2*NC_sum_list/N_sum_list
+		#sim_list=[2*a/b for a,b in zip(NC_sum_list,N_sum_list)]
+		#print sim_list
+
+		#Find the index of maximu similarity
+		sim_bestIndex=sim_list.index(max(sim_list))
+		print "the best combination similiar to EN group ",N_en,"is ",combin_list[sim_bestIndex]
+		print "with the similarity of ",max(sim_list)
+		print "-----------------"
+	 	max_sum+=max(sim_list)
+		#Create a DataFrame for print
+		#df_result=pd.DataFrame()
+	print "Average similairty is: ",max_sum/k
 
 

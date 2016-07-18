@@ -6,6 +6,8 @@
 . 运行顺序
 	. find_vecs_en.py
 	. find_vecs_jp.py
-	. find_good_vecs_en_jp.py
-	. clust_jp_en.r
-	. statistic.py
+	. clust_jp_en.r  通过更改k来确定cluster数
+	. merge_clusters.py
+	. statistic.py   通过更改k来确定cluster数
+. 添加了getVector.py
+	来快速查找一个单词对应的word2vec向量
