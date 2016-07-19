@@ -59,7 +59,22 @@ if __name__ == '__main__':
 	df_jp,df_en,df_good_dic = cross_check.cross_check(input_filename3,input_filename4,input_filename5,
 	output_filename1,output_filename2, output_filename3,col_names=['en','jp'])
 
+	E = df_en[range(1,201)]
+	J = df_jp[range(1,201)]
 
+	# similarity = np.dot(np.matrix(E),np.matrix(J).T)
 
+	JTJ=np.dot(J.T,J)
+	# iJTJ=np.linalg.inv(np.matrix(JTJ))
+	# print np.dot(JTJ,iJTJ) # This is now identical!!
+	# print np.linalg.det(JTJ)  # The determinant of det(JTJ) is 0!
+	# Which means there is no inverse matrix
 
+	# Solutions: Using linear ridge regression 
+	la=0.00001
+	dim=200
+	I= np.eye(dim)
+	print "inv(JTJ)*JTJ=I?: "
+	print (JTJ + la * I).dot(np.linalg.inv(JTJ + la * I))
+	W= np.dot(np.linalg.inv(JTJ + la * I),J.T).dot(E)
 	print("--- %s seconds ---" % (time.time() - start_time))
