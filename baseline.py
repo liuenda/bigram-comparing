@@ -3,6 +3,7 @@ import time
 import pandas as pd
 import getVector
 import cross_check
+import numpy as np
 
 
 def split_file(input_filename,input_newword_en,input_newword_jp):
@@ -55,7 +56,10 @@ if __name__ == '__main__':
 	output_filename2='output_newwords/good_vecs_en.csv'
 	output_filename3='output_newwords/good_dic.csv'
 
-	cross_check.cross_check(input_filename3,input_filename4,input_filename5,
+	df_jp,df_en,df_good_dic = cross_check.cross_check(input_filename3,input_filename4,input_filename5,
 	output_filename1,output_filename2, output_filename3,col_names=['en','jp'])
+
+
+
 
 	print("--- %s seconds ---" % (time.time() - start_time))

@@ -42,6 +42,7 @@ def cross_check(input_filename3,input_filename4,input_filename5,
 	df_en.to_csv(output_filename2,index=False,quoting=csv.QUOTE_NONNUMERIC,encoding='utf-8')
 	df_good_dic.to_csv(output_filename3,index=False,quoting=csv.QUOTE_NONNUMERIC,encoding='utf-8')
 
+	return df_jp,df_en,df_good_dic
 
 
 if __name__ == '__main__':
