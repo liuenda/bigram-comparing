@@ -14,14 +14,13 @@ import csv
 import pandas as pd
 
  
-cross_check(input_filename3,input_filename4,input_filename5,
-	output_filename1,output_filename2，output_filename3):
+def cross_check(input_filename3,input_filename4,input_filename5,
+	output_filename1,output_filename2, output_filename3,col_names=['jp','en']):
 	# df_jp=pd.read_csv(input_filename3,index_col=0)
 	# df_en=pd.read_csv(input_filename4,index_col=0)
 	df_jp=pd.read_csv(input_filename3).rename(columns={'Unnamed: 0':'jp'})
 	df_en=pd.read_csv(input_filename4).rename(columns={'Unnamed: 0':'en'})
-	df_dic=pd.read_csv(input_filename5,names=['jp','en'])
-
+	df_dic=pd.read_csv(input_filename5,names=col_names)
 	# Be careful HERE!
 	# 再次逻辑错误，删除的时候两个list对应的词汇已经不同
 	# 因为en和jp两个list都有分别自己删除的方了
@@ -59,6 +58,6 @@ if __name__ == '__main__':
 	output_filename3='output/good_dic.csv'
 
 	cross_check(input_filename3,input_filename4,input_filename5,
-	output_filename1,output_filename2，output_filename3)
+	output_filename1,output_filename2, output_filename3)
 
 	print("--- %s seconds ---" % (time.time() - start_time))
