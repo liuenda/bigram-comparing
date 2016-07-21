@@ -11,6 +11,21 @@ def split_file(input_filename,input_newword_en,input_newword_jp):
 	df.en.to_csv(input_newword_name_en,index=False,encoding='utf-8')
 	df.jp.to_csv(input_newword_name_jp,index=False,encoding='utf-8')
 
+def fix_projection(E,J):
+	JTJ=np.dot(J.T,J)
+	# iJTJ=np.linalg.inv(np.matrix(JTJ))
+	# print np.dot(JTJ,iJTJ) # This is now identical!!
+	# print np.linalg.det(JTJ)  # The determinant of det(JTJ) is 0!
+	# Which means there is no inverse matrix
+
+	# Solutions: Using linear ridge regression 
+	la=0.00001
+	dim=200
+	I= np.eye(dim)
+	print "inv(JTJ)*JTJ=I?: "
+	print (JTJ + la * I).dot(np.linalg.inv(JTJ + la * I))
+	W= np.dot(np.linalg.inv(JTJ + la * I),J.T).dot(E)
+
 
 if __name__ == '__main__':
 
@@ -64,17 +79,8 @@ if __name__ == '__main__':
 
 	# similarity = np.dot(np.matrix(E),np.matrix(J).T)
 
-	JTJ=np.dot(J.T,J)
-	# iJTJ=np.linalg.inv(np.matrix(JTJ))
-	# print np.dot(JTJ,iJTJ) # This is now identical!!
-	# print np.linalg.det(JTJ)  # The determinant of det(JTJ) is 0!
-	# Which means there is no inverse matrix
 
-	# Solutions: Using linear ridge regression 
-	la=0.00001
-	dim=200
-	I= np.eye(dim)
-	print "inv(JTJ)*JTJ=I?: "
-	print (JTJ + la * I).dot(np.linalg.inv(JTJ + la * I))
-	W= np.dot(np.linalg.inv(JTJ + la * I),J.T).dot(E)
+
+
+
 	print("--- %s seconds ---" % (time.time() - start_time))
