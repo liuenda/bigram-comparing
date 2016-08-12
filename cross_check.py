@@ -1,7 +1,7 @@
 # coding:utf-8
 
-# 此脚本将合并通过find_vecs_en.py和find_vecs_jp.py两个脚本找出的vector来进行合并，
-# 至合并两个语言共同拥有的单词，只有一方出现单词将全部被删除，所以用到了复杂的算法。
+# 此脚本将合并通过find_vecs_en.py和find_vecs_jp.py两个脚本输出的vector结果（vec_en, vec_jp）来进行合并，
+# 在对照双语词典的帮助下，合并两个语言共同包含相同意思的单词，只有一方出现单词将全部被删除，所以用到了复杂的算法。
 
 import sys  
 import time
