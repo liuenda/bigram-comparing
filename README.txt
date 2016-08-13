@@ -1,11 +1,19 @@
-﻿2016/8/12 
+﻿2016/8/13 上午
+. 测试了baseline的可行性
+. 统一了词典csv的输入格式（en,jp的header是必须的，但是顺序可以更换，比如变成jp,en）
+. 修改了bug，重命名了输出的文件名称（不管是training数据还是test数据都做了全面的更换）
+# 输入： a en-jp 词典, en和jp的word2vec 模型，和输出文件路径
+# 输出: --> words_en.txt, words_jp.text 
+    	--> log files, vecs_en.csv, vecs_jp.csv
+ 		--> good_vecs_en.csv, good_vecs_good_en.csv, good_dic.csv
+
+2016/8/12 
 . baseline.py 还是半成品，里面的fit_projection函数还未被使用过 （已被修改）
 	新建的run()函数可以一次执行以下操作：
 	. 完成jp-en词典的拆分，生成en词典1个，jp词典1个
 	. 分别从en和jp的word2vec模型中抽取en词典的vector和jp词典的vector
 	. 交叉检测（cross-check）删除en或者jp不包括的词汇 (原理复杂，待解释)
 . run(mode) 函数中的参数可以设置成 baseline 和 proposed 两种模式，在main函数中将被逐一执行
-
 
 
 . getVector.py

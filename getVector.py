@@ -36,13 +36,14 @@ def vecNorm(vector):
 # 	log_filename2="output_newwords/Log/getVector_log.txt"
 def retrieve_vec(model_name, input_filename, output_filename, 
 	log_filename1, log_filename2):
-	print "starting to retrieve word2vec for english word list:"
+	print "---------------getVector.py-------retrieve_vec()------"
+	print "starting to retrieve word2vec for word list:"
 	print "model_name (the name of the w2v model) = ",model_name
 	print "input_filename (the word list) = ", input_filename
 	print "output_filename (the word+vec results in CSV) = ",output_filename
 	print "log_filename1 (the failed list) = ",log_filename1
 	print "log_filename2 (the log) = ",log_filename2
-
+	print "------------------------------------------------------"
 	#Initialization
 	logout=open(log_filename2,'w')
 	output_unmatch=open(log_filename1,'w')
@@ -58,7 +59,7 @@ def retrieve_vec(model_name, input_filename, output_filename,
 	with open(input_filename) as vocab_file:
 		for index,vocab in enumerate(vocab_file):
 			# debug
-			print index
+			print index,":",
 
 			rawVoc=vocab.rstrip() # remove all '\n' and '\r'
 			vocab=rawVoc.lower()			
@@ -67,7 +68,7 @@ def retrieve_vec(model_name, input_filename, output_filename,
 			# If the line is a SINGLE word
 			if " " not in vocab:
 				count_word+=1
-				print "word",vocab
+				print "word",vocab.decode('utf-8'),
 				baseform=getBase(vocab,wnl)
 				try:
 					vecW=model[baseform] #!!!Maybe the word is not existed
@@ -78,10 +79,10 @@ def retrieve_vec(model_name, input_filename, output_filename,
 					#new 3.15: generate a useless list for deleting in the next stage
 					output_unmatch.write(rawVoc) # no \n is needed since the 
 					output_unmatch.write('\n')
+					print "--- Not Found ---"
 				else:
 					vecW=vecNorm(vecW) #Normalized the raw vector
-					print "the new length of the vector is:"
-					print LA.norm(vecW)
+					print "(the new length of the vector is:",LA.norm(vecW),")"
 					info+=baseform+": OK!\n" #create log information
 					logout.write(info) #write log information to log file
 					# fout.write(rawVoc) #add in 16/3/17
@@ -95,6 +96,7 @@ def retrieve_vec(model_name, input_filename, output_filename,
 
 			# If the line is a PHRASE --------
 			else:
+				print "*** A Phrase is detected ***"
 				count_phrase+=1
 				tokens = nltk.word_tokenize(vocab)
 				tagged = nltk.pos_tag(tokens)
@@ -113,6 +115,7 @@ def retrieve_vec(model_name, input_filename, output_filename,
 							info+=repr(e)+" " #create log information
 							counter_NaN+=1 #increase the nan counter
 							flag_nan=True
+							print "--- Not Found ---"
 							break #if exception occrus, stop the for loop
 
 						else:
@@ -121,14 +124,13 @@ def retrieve_vec(model_name, input_filename, output_filename,
 							#print vec
 
 				logout.write(info+"\n") #write log information to log file
-				print "phrase:",modified #print the good phrase
+				print "phrase:",modified, #print the good phrase
 
 				# if the phrase is all good, nomalize it and then save it to the goodlist file (fout) and save the array to good_vecs
 				if flag_nan==False:
 					#Normalize the added raw phrase vector to unit length
 					vecP=vecNorm(vecP)
-					print "the new length of the vector is:"
-					print LA.norm(vecP)
+					print "((the new length of the vector is:",LA.norm(vecP),"))"
 
 					#fout.write(" ".join(modified)+"\n") #here is a problem which will produce one more line here
 					# fout.write(rawVoc)
@@ -141,17 +143,20 @@ def retrieve_vec(model_name, input_filename, output_filename,
 					#new 3.15: generate a useless list for deleting in the next stage
 					output_unmatch.write(rawVoc)
 
-		print "NaN words:",counter_NaN
-		print "Pharses Number:",count_phrase
-		print "all lines:",index+1
-		print "all word:",count_word
+		print "Word Not Found (count):",counter_NaN
+		print "Pharses Found (count):",count_phrase
+		print "all lines (debug) :",index+1
+		print "all word (count) :",count_word
 
 		# Create a pandas Series and save
 		df = pd.DataFrame(good_vecs,index=good_list)
 		df.to_csv(output_filename,index=True,quoting=csv.QUOTE_NONNUMERIC,encoding='utf-8')
-
+		# Here, the reason why index=True is that presently the word list is considered as
+		# the index, rather than the content of the chart!
 		output_unmatch.close()
 		logout.close()
+
+		print "Finish getVector.retrieve_vec() model----------------"
 
 def retrieve_vec_jp(model_name, input_filename, output_filename, 
 	log_filename1, log_filename2):

@@ -7,7 +7,7 @@ import numpy as np
 
 
 def split_file(input_dic_name,input_list_name_en,input_list_name_jp):
-	df=pd.read_csv(input_dic_name,names=["en","jp"]) 
+	df=pd.read_csv(input_dic_name) 
 	df.en.to_csv(input_list_name_en,index=False,encoding='utf-8')
 	df.jp.to_csv(input_list_name_jp,index=False,encoding='utf-8')
 
@@ -37,12 +37,12 @@ def fit_projection(E,J):
 
 def run(mode):
 
-	if mode='baseline':
+	if mode == 'baseline':
 		print "start to run under the 'baseline' model [baseline.py]"
 		output_dir='output_newwords/'
 		input_dic_name="new_words/my_jp-en_short.csv"
 	
-	if mode = 'proposed':
+	if mode == 'proposed':
 		print "start to run under the 'proposed' model [baseline.py]"
 		output_dir='output/'
 		input_dic_name="input/dic_103.csv"
@@ -79,7 +79,6 @@ def run(mode):
 		output_filename=output_filename, log_filename1=log_filename1, log_filename2=log_filename2)
 
 
-
 	# cross-check the JP, EN file--------------------------------
 	input_filename3=output_dir+'vecs_jp.csv' # output_filename (jp)
 	input_filename4=output_dir+'vecs_en.csv' # output_filename (en)
@@ -89,7 +88,7 @@ def run(mode):
 	output_filename3=output_dir+'good_dic.csv'
 
 	df_jp,df_en,df_good_dic = cross_check.cross_check(input_filename3,input_filename4,input_dic_name,
-	output_filename1,output_filename2, output_filename3,col_names=['en','jp'])
+	output_filename1,output_filename2, output_filename3)
 
 	E = df_en[range(1,201)]
 	J = df_jp[range(1,201)]
