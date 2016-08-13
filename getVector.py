@@ -96,7 +96,7 @@ def retrieve_vec(model_name, input_filename, output_filename,
 
 			# If the line is a PHRASE --------
 			else:
-				print "*** A Phrase is detected ***"
+				#print "*** A Phrase is detected ***"
 				count_phrase+=1
 				tokens = nltk.word_tokenize(vocab)
 				tagged = nltk.pos_tag(tokens)
@@ -115,7 +115,7 @@ def retrieve_vec(model_name, input_filename, output_filename,
 							info+=repr(e)+" " #create log information
 							counter_NaN+=1 #increase the nan counter
 							flag_nan=True
-							print "--- Not Found ---"
+							print "---Phrase Not Found ---"
 							break #if exception occrus, stop the for loop
 
 						else:
