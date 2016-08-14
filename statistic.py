@@ -52,6 +52,8 @@ def merge(k,output_dir):
 
 	df.to_csv(output_filename,index=False,quoting=csv.QUOTE_NONNUMERIC,encoding='utf-8')
 
+	return output_filename
+
 #Get a sum of NC(number of common words) for one combination
 #NOTE, DO NOT PASTE the whole function to ipython at once!
 #combin is a list, NC is a tuple
@@ -133,10 +135,9 @@ def find_mapping(input_filename,k):
 
 if __name__ =="__main__":
 
-	merge(k,output_dir)
+	# merge the clustering results for English and Japanese
+	merged_filename=merge(k,output_dir)
 
-	input_filename=output_dir+'merge'+str(k)+'.csv'
-
-	find_mapping(input_filename,k)
-
-
+	# find the mapping relationship among groups
+	# # merged_filename=output_dir+'merge'+str(k)+'.csv'
+	find_mapping(merged_filename,k)
