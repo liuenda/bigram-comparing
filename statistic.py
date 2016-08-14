@@ -8,14 +8,18 @@ import numpy as np
 from itertools import combinations
 #In order to get float result when dividing
 
+# Global Variables
 k=10
+output_dir='output/'
+# output_dir='output/cluster-scikit/'
 
-def merge(k):
-	input_filename1='output/jp'+str(k)+'_good.csv'
-	input_filename2="output/good_dic.csv"
-	input_filename3='output/en'+str(k)+'_good.csv'
 
-	output_filename='output/merge'+str(k)+'.csv'
+def merge(k,output_dir):
+	input_filename1=output_dir+'jp'+str(k)+'_good.csv'
+	input_filename2=output_dir+'good_dic.csv'
+	input_filename3=output_dir+'en'+str(k)+'_good.csv'
+
+	output_filename=output_dir+'merge'+str(k)+'.csv'
 
 	df_jp=pd.read_csv(input_filename1,header=0)
 	df_dic=pd.read_csv(input_filename2,header=0)
@@ -65,9 +69,9 @@ def getNSum(combin,N):
 
 if __name__ =="__main__":
 
-	merge(k)
+	merge(k,output_dir)
 
-	input_filename='output/merge'+str(k)+'.csv'
+	input_filename=output_dir+'merge'+str(k)+'.csv'
 	df=pd.read_csv(input_filename)
 	counter=[]
 	for value in range(1,k+1):

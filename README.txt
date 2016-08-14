@@ -1,4 +1,8 @@
-﻿2016/8/13 上午
+﻿2016/8/14
+. 新建了基于python sci-kit learn的kmeans聚类脚本 clustering（待验证真实性）
+.
+
+2016/8/13
 . 测试了baseline的可行性
 . 统一了词典csv的输入格式（en,jp的header是必须的，但是顺序可以更换，比如变成jp,en）
 . 修改了bug，重命名了输出的文件名称（不管是training数据还是test数据都做了全面的更换）
