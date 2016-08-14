@@ -1,6 +1,7 @@
 ﻿2016/8/14
-. 新建了基于python sci-kit learn的kmeans聚类脚本 clustering（待验证真实性）
-.
+. 新建了基于python sci-kit learn的kmeans聚类脚本 clustering 
+	.. 检测结果表明精度比R要低8%左右 （原因未知）
+	
 
 2016/8/13
 . 测试了baseline的可行性

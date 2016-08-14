@@ -6,7 +6,7 @@ import time
 from sklearn.cluster import KMeans
 
 start_time = time.time()
-#np.random.seed(45)
+np.random.seed(42)
 k=10
 output_dir='output/cluster-scikit/'
 
@@ -30,7 +30,7 @@ vecs_en=read_vecs('en')
 vecs_jp=read_vecs('jp')
 
 # kmeans_en=KMeans(init='k-means++',n_clusters=k,n_init=10)
-kmeans_en=KMeans(init='k-means++',n_clusters=k,n_init=10)
+kmeans_en=KMeans(init='k-means++',n_clusters=k,n_init=1)
 kmeans_en.fit(vecs_en.drop('en',axis=1))
 # Rather than cluster number from 1 to k, sci-kit learn will choose 
 # 0 to k-1 as the cluster name, so we want them increase 1
@@ -41,7 +41,7 @@ print "English clustering results:", kmeans_en_labels
 save_cluster(vecs_en,kmeans_en_labels,'en',output_dir)
 
 # kmeans_jp=KMeans(init='k-means++',n_clusters=k,n_init=10)
-kmeans_jp=KMeans(init='k-means++',n_clusters=k,n_init=10)
+kmeans_jp=KMeans(init='k-means++',n_clusters=k,n_init=1)
 kmeans_jp.fit(vecs_jp.drop('jp',axis=1))
 # Rather than cluster number from 1 to k, sci-kit learn will choose 
 # 0 to k-1 as the cluster name, so we want them increase 1

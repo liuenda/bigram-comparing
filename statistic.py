@@ -10,8 +10,8 @@ from itertools import combinations
 
 # Global Variables
 k=10
-output_dir='output/'
-# output_dir='output/cluster-scikit/'
+# output_dir='output/'
+output_dir='output/cluster-scikit/'
 
 
 def merge(k,output_dir):
