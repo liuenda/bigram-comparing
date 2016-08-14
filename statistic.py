@@ -8,6 +8,9 @@ import numpy as np
 from itertools import combinations
 #In order to get float result when dividing
 
+# import sys
+# sys.stdout = open('file.txt', 'w')
+
 # Global Variables
 k=10
 # output_dir='output/'
@@ -66,15 +69,12 @@ def getNSum(combin,N):
 	#print "N sum for combination:",combin," is ",sum
 	return sum
 
-
-if __name__ =="__main__":
-
-	merge(k,output_dir)
-	dic={}
-
-	input_filename=output_dir+'merge'+str(k)+'.csv'
+def find_mapping(input_filename,k):
 	df=pd.read_csv(input_filename)
 	counter=[]
+	# dic={}
+	mapping_list=[]
+
 	for value in range(1,k+1):
 		sub_df = df.ix[(df['en10']==value)]
 		ser=sub_df['jp10']
@@ -118,14 +118,25 @@ if __name__ =="__main__":
 		print "with the similarity of ",max(sim_list)
 		print "-----------------"
 	 	max_sum+=max(sim_list)
-		#Create a DataFrame for print
-		#df_result=pd.DataFrame()
 
-		# Save the each mapping results into a dictionary
-		dic[N_en]=combin_list[sim_bestIndex]
+		# # Save the each mapping results into a dictionary
+		# dic[N_en]=combin_list[sim_bestIndex]
+
+		# SAve the each mapping resutls with similarity (and centroid) into a list of list
+		mapping_list.append([N_en,combin_list[sim_bestIndex],max(sim_list)])
 
 	print "Average similairty is: ",max_sum/k
-	df_mapping=pd.DataFrame(dic.items(),columns=['n_en','mapping'])
+	# df_mapping=pd.DataFrame(dic.items(),columns=['n_en','mapping'])
+	df_mapping=pd.DataFrame(mapping_list,columns=['n_en','mapping','max_similairty'])
 	df_mapping.to_csv("output/mapping/mapping_en_"+str(k)+".csv",index=False)
+
+
+if __name__ =="__main__":
+
+	merge(k,output_dir)
+
+	input_filename=output_dir+'merge'+str(k)+'.csv'
+
+	find_mapping(input_filename,k)
 
 
