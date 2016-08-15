@@ -1,6 +1,6 @@
 #setwd("C:/Users/liuenda-toshiba/Dropbox/Research/2016.5.11~Reuter/Comparison")
 
-k=10
+k=11
 cluster<-function(k,lang_name){
   dim=200
   df_jp= read.csv(paste('./output/good_vecs_',lang_name,'.csv',sep=''),fileEncoding='utf-8')

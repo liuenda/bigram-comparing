@@ -12,9 +12,9 @@ from itertools import combinations
 # sys.stdout = open('file.txt', 'w')
 
 # Global Variables
-k=10
-# output_dir='output/'
-output_dir='output/cluster-scikit/'
+k=11
+output_dir='output/'
+# output_dir='output/cluster-scikit/'
 
 
 def merge(k,output_dir):
@@ -129,7 +129,7 @@ def find_mapping(input_filename,k):
 
 	print "Average similairty is: ",max_sum/k
 	# df_mapping=pd.DataFrame(dic.items(),columns=['n_en','mapping'])
-	df_mapping=pd.DataFrame(mapping_list,columns=['n_en','mapping','max_similairty'])
+	df_mapping=pd.DataFrame(mapping_list,columns=['n_en','mapping','max_similarity'])
 	df_mapping.to_csv("output/mapping/mapping_en_"+str(k)+".csv",index=False)
 
 

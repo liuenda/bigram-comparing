@@ -26,30 +26,30 @@ def save_cluster(vecs_en,kmeans_en_labels,lang_name,output_dir):
 	en10_good.to_csv(output_dir+lang_name+str(k)+'_good.csv',index=False)
 
 
-vecs_en=read_vecs('en')
-vecs_jp=read_vecs('jp')
+if __name__ =="__main__":
+	vecs_en=read_vecs('en')
+	vecs_jp=read_vecs('jp')
 
-# kmeans_en=KMeans(init='k-means++',n_clusters=k,n_init=10)
-kmeans_en=KMeans(init='k-means++',n_clusters=k,n_init=1)
-kmeans_en.fit(vecs_en.drop('en',axis=1))
-# Rather than cluster number from 1 to k, sci-kit learn will choose 
-# 0 to k-1 as the cluster name, so we want them increase 1
-kmeans_en_labels = kmeans_en.labels_+1 
-kmeans_en_centers = kmeans_en.cluster_centers_
-print "English clustering results:", kmeans_en_labels
-# save the result to CSV
-save_cluster(vecs_en,kmeans_en_labels,'en',output_dir)
+	# kmeans_en=KMeans(init='k-means++',n_clusters=k,n_init=10)
+	kmeans_en=KMeans(init='k-means++',n_clusters=k,n_init=1)
+	kmeans_en.fit(vecs_en.drop('en',axis=1))
+	# Rather than cluster number from 1 to k, sci-kit learn will choose 
+	# 0 to k-1 as the cluster name, so we want them increase 1
+	kmeans_en_labels = kmeans_en.labels_+1 
+	kmeans_en_centers = kmeans_en.cluster_centers_
+	print "English clustering results:", kmeans_en_labels
+	# save the result to CSV
+	save_cluster(vecs_en,kmeans_en_labels,'en',output_dir)
 
-# kmeans_jp=KMeans(init='k-means++',n_clusters=k,n_init=10)
-kmeans_jp=KMeans(init='k-means++',n_clusters=k,n_init=1)
-kmeans_jp.fit(vecs_jp.drop('jp',axis=1))
-# Rather than cluster number from 1 to k, sci-kit learn will choose 
-# 0 to k-1 as the cluster name, so we want them increase 1
-kmeans_jp_labels = kmeans_jp.labels_+1
-kmeans_jp_centers = kmeans_jp.cluster_centers_
-print "Japanese clustering results:", kmeans_jp_labels
-# save the result to CSV
-save_cluster(vecs_jp,kmeans_jp_labels,'jp',output_dir)
+	# kmeans_jp=KMeans(init='k-means++',n_clusters=k,n_init=10)
+	kmeans_jp=KMeans(init='k-means++',n_clusters=k,n_init=1)
+	kmeans_jp.fit(vecs_jp.drop('jp',axis=1))
+	# Rather than cluster number from 1 to k, sci-kit learn will choose 
+	# 0 to k-1 as the cluster name, so we want them increase 1
+	kmeans_jp_labels = kmeans_jp.labels_+1
+	kmeans_jp_centers = kmeans_jp.cluster_centers_
+	print "Japanese clustering results:", kmeans_jp_labels
+	# save the result to CSV
+	save_cluster(vecs_jp,kmeans_jp_labels,'jp',output_dir)
 
-
-print("--- %s seconds ---" % (time.time() - start_time))
+	print("--- %s seconds ---" % (time.time() - start_time))
