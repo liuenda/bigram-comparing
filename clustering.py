@@ -2,7 +2,6 @@
 import time
 import pandas as pd
 import numpy as np
-import time
 from sklearn.cluster import KMeans
 
 start_time = time.time()

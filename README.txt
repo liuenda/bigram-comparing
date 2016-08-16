@@ -1,4 +1,16 @@
-﻿2016/8/14
+﻿2016/8/15
+. 添加了基于spherical k-means cluster的skmeans方法来验证我的clustering方法的可行性
+	.. 实验结果表明目前的先单位化后聚类的办法和使用skmean结果上并没有明显区别
+. 目前运行顺序
+	. baseline.py
+	. clustering (cluster_jp_en.r / clustering.py)
+	. statistic.py
+	. experiment.py
+    * 两个module： getVector.py 和 cross_check.py 包含独立运行代码，但是不使用
+. 添加了 experiment.py 比较baseline和proposed method的实验结果
+
+
+2016/8/14
 . 新建了基于python sci-kit learn的kmeans聚类脚本 clustering 
 	.. 检测结果表明精度比R要低8%左右 （原因未知）
 . 在statistic.py中添加了保存mapping结果的代码
