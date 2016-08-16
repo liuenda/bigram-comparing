@@ -24,6 +24,19 @@ def save_cluster(vecs_en,kmeans_en_labels,lang_name,output_dir):
 	en10_good=en10_good[[lang_name,columns_name]]
 	en10_good.to_csv(output_dir+lang_name+str(k)+'_good.csv',index=False)
 
+def save_centroid(kmeans_centers,lang_name):
+
+	centroid_filename = "output/cluster-scikit/centroid_" + lang_name + str(k) + ".csv"
+	df_centers=pd.DataFrame(kmeans_centers)
+	df_centers.index = range(1,k+1)
+	print "DEBUG: kmeans_centers is:"
+	print np.shape(kmeans_centers)
+	print pd.DataFrame(kmeans_centers)
+
+	df_centers.to_csv(centroid_filename)
+
+	return df_centers
+
 
 if __name__ =="__main__":
 	vecs_en=read_vecs('en')
@@ -39,6 +52,10 @@ if __name__ =="__main__":
 	print "English clustering results:", kmeans_en_labels
 	# save the result to CSV
 	save_cluster(vecs_en,kmeans_en_labels,'en',output_dir)
+	
+	# save centroid to "centroid_en[k].csv"
+	save_centroid(kmeans_en_centers,'en')
+
 
 	# kmeans_jp=KMeans(init='k-means++',n_clusters=k,n_init=10)
 	kmeans_jp=KMeans(init='k-means++',n_clusters=k,n_init=1)
@@ -50,5 +67,8 @@ if __name__ =="__main__":
 	print "Japanese clustering results:", kmeans_jp_labels
 	# save the result to CSV
 	save_cluster(vecs_jp,kmeans_jp_labels,'jp',output_dir)
+
+	# save centroid to "centroid_en[k].csv"
+	save_centroid(kmeans_jp_centers,'jp')
 
 	print("--- %s seconds ---" % (time.time() - start_time))

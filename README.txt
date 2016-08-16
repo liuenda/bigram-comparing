@@ -1,4 +1,12 @@
-﻿2016/8/15
+﻿2016/8/16
+. 在clustering.py 中添加 save_centroid() 函数 来保存得到的k个cluster的center
+. 在experiment.py 中添加了 find_group_center() 函数 来读取计算保存mapping以后的group中心
+. 在experiment.py 中完成了proposal() 函数
+. 在experiment.py 中完成了baseline() 函数
+分别比较了baseline和proposal方法的实验结果，表明精确度几乎没有改变（但是正确识别的单词不太一样）
+
+
+2016/8/15
 . 添加了基于spherical k-means cluster的skmeans方法来验证我的clustering方法的可行性
 	.. 实验结果表明目前的先单位化后聚类的办法和使用skmean结果上并没有明显区别
 . 目前运行顺序
@@ -8,7 +16,7 @@
 	. experiment.py
     * 两个module： getVector.py 和 cross_check.py 包含独立运行代码，但是不使用
 . 添加了 experiment.py 比较baseline和proposed method的实验结果
-
+	.. 添加并且调试了baseline_method目前精度为５％左右，待检查程序的正确性和写备注。
 
 2016/8/14
 . 新建了基于python sci-kit learn的kmeans聚类脚本 clustering 
