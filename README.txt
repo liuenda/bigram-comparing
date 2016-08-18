@@ -1,4 +1,17 @@
-﻿2016/8/16
+﻿2016/8/18
+. 改用spherical k-means来进行计算
+. 
+
+2016/8/17
+. 调试了experiment.py的方法，更换了k的数值来检测精确度	
+. 目前运行顺序
+	. preparation.py
+	. clustering (cluster_jp_en.r / clustering.py)
+	. statistic.py
+	. experiment.py
+. 结果：很不理想，精度很差！
+
+2016/8/16
 . 在clustering.py 中添加 save_centroid() 函数 来保存得到的k个cluster的center
 . 在experiment.py 中添加了 find_group_center() 函数 来读取计算保存mapping以后的group中心
 . 在experiment.py 中完成了proposal() 函数

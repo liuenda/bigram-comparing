@@ -12,9 +12,10 @@ from itertools import combinations
 # sys.stdout = open('file.txt', 'w')
 
 # Global Variables
-k=11
-output_dir='output/'
+k = 20
+# output_dir='output/'
 # output_dir='output/cluster-scikit/'
+output_dir='output/cluster-skmeans/'
 
 
 def merge(k,output_dir):

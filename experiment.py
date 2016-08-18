@@ -5,9 +5,16 @@ import numpy as np
 import baseline
 from ast import literal_eval as make_tuple
 
+pd.set_option('display.height', 1000)
+pd.set_option('display.max_rows', 500)
+pd.set_option('display.max_columns', 500)
+pd.set_option('display.width', 1000)
+
 start_time = time.time()
 
-k = 10
+k = 20
+# output_dir='output/cluster-scikit/'
+output_dir='output/cluster-skmeans/'
 
 def load_data():
 	test_en_filename = "output_newwords/"+"good_vecs_en.csv"
@@ -39,6 +46,7 @@ def get_similarity(df_training,df_test,lang_name):
 
 def get_top1_similar_words(similarity_matrix,axis_=0):
 	s_similarity_top_1 = pd.DataFrame(similarity_matrix).idxmax(axis=axis_)
+	# s_similarity_top_1 = pd.DataFrame(similarity_matrix).idxmin(axis=axis_)
 	# print "DEBUG: s_similarity_top_1 is:"
 	# print s_similarity_top_1
 	return s_similarity_top_1
@@ -85,8 +93,8 @@ def baseline_method(df_test_en, df_test_jp, df_training_en, df_training_jp, df_o
 	print np.shape(similarity_matrix_jp)
 
 	s_similarity_top_2=get_top1_similar_words(similarity_matrix_jp,axis_=1)
-	print "DEBUG: the s_similarity_top_2 is:"
-	print s_similarity_top_2
+	# print "DEBUG: the s_similarity_top_2 is:"
+	# print s_similarity_top_2
 
 	print "DEBUG: df_new_dict.ix[s_similarity_top_2] is:"
 	print df_new_dict.ix[s_similarity_top_2]
@@ -105,15 +113,15 @@ def baseline_method(df_test_en, df_test_jp, df_training_en, df_training_jp, df_o
 # call: find_group_center()
 def proposal_method(df_test_en, df_test_jp, df_training_en, df_training_jp, df_old_dict, df_new_dict):
 	# Load mapping (en cluster VS jp groups)
-	mapping_filename = "output/mapping/mapping_en_10.csv"
+	mapping_filename = "output/mapping/mapping_en_"+str(k)+".csv"
 	df_mapping = pd.read_csv(mapping_filename)
 
 	# Find center for en-cluster  (retreive)
-	cluster_centroid_dir=  "output/cluster-scikit/"
+	cluster_centroid_dir=  output_dir
 	df_center_en = find_cluster_center(cluster_centroid_dir,'en')
 
 	# Find center for jp-cluster  (retreive)
-	cluster_centroid_dir=  "output/cluster-scikit/"
+	cluster_centroid_dir=  output_dir
 	df_center_jp = find_cluster_center(cluster_centroid_dir,'jp')
 
 	# Find the center of the jp-groups through df_mapping (mapping)
@@ -126,7 +134,7 @@ def proposal_method(df_test_en, df_test_jp, df_training_en, df_training_jp, df_o
 	similarity_matrix_en = np.array(df_center_en).dot(
 		np.array(df_test_en.drop('en', axis=1).T))
 	print "DEBUG, similarity_matrix_en ="
-	print similarity_matrix_en
+	# print similarity_matrix_en
 	print "with shape of ", np.shape(similarity_matrix_en)
 
 	# Find the closest en-cluster for the new-words (2)
@@ -163,8 +171,10 @@ def proposal_method(df_test_en, df_test_jp, df_training_en, df_training_jp, df_o
 	df_result = df_result.drop(range(1,201),axis=1)
 
 	# Compare the anwser
-	df_result['the real translation'] = df_test_jp['jp']
-	print df_result['the real translation'] == df_result['jp_predicted']
+	df_result['real_translation'] = df_test_jp['jp']
+	df_result['accuracy'] = (df_result['real_translation'] == df_result['jp_predicted'])
+	print "the df_result is:"
+	print df_result
 
 # Find the center of each cluster
 def find_cluster_center(cluster_centroid_dir,lang_name):
