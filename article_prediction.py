@@ -14,14 +14,16 @@ from ast import literal_eval as make_tuple
 start_time = time.time()
 
 # pd.set_option('display.height', 1000)
-pd.set_option('display.max_rows', 100)
-pd.set_option('display.max_columns', 200)
-pd.set_option('display.width', 200)
+# pd.set_option('display.max_rows', 100)
+# pd.set_option('display.max_columns', 200)
+# pd.set_option('display.width', 200)
+# pd.reset_option('all')
 
 k=20
 dim=200
 nan=np.empty(dim)
 n_rows=20
+repeat=20
 
 input_article_en='articles/en999.txt'
 input_article_jp='articles/jp999.txt'
@@ -56,7 +58,7 @@ def clean_jp(article):
 def mapping_artile(article,model,wnl):
 	tokens=article.split()
 	tokens_mapping=[mapping_word(word,model,wnl) for word in tokens]
-	print "DEBUG: Finish 1 line-------------"
+	# print "DEBUG: Finish 1 line-------------"
 	return tokens_mapping
 
 # Call mapping_word # much more slower, although there is no loop
@@ -65,7 +67,7 @@ def mapping_artile2(article,model,wnl):
 	# tokens_mapping=[mapping_word(word,model,wnl) for word in tokens]
 	s_tokens=pd.Series(tokens)
 	tokens_mapping=s_tokens.apply(mapping_word,args=(model,wnl))
-	print "DEBUG: Finish 1 line-------------"
+	# print "DEBUG: Finish 1 line-------------"
 	return tokens_mapping
 
 # Call: get_vector
@@ -133,6 +135,7 @@ def map_to_jp_vector(vector_en,df_mapping):
 	# For any one freqency list (such as vector_en=[1,54,3,13,...3])
 	# For each one element in the frequence list, such as frequency=1:
 	for index,frequency in enumerate(vector_en):
+		# print "DEBUG: index=",index
 		# print "DEBUG: frequency=",frequency
 		# Get the mapping information for cluster 1, mapping=(15,7,3,1)
 		mapping=df_mapping.ix[index].mapping_parsed
@@ -145,6 +148,69 @@ def map_to_jp_vector(vector_en,df_mapping):
 			vector_jp[cluster_name-1]+=similarity*frequency
 			# print "DEBUG: vector_jp=",vector_jp
 	return vector_jp
+
+def repeat_test(df_accuray,repeat,df_mapping):
+	for index_test,test in enumerate(range(0,repeat)):
+		df_en_clean=pd.read_csv("articles/en999_mapped_"+str(k)+".csv").sample(n_rows).reset_index()
+		df_en_clean['transformation_en']=df_en_clean['transformation_en'].apply(lambda x:ast.literal_eval(x))
+		random_number=df_en_clean['index']
+		print "The random English article number: "
+		print index_test,random_number.values
+
+		# df_jp_clean['transformation_jp']=\
+			# df_jp_clean.jp_article.apply(mapping_artile,args=(model_jp,wnl))
+		# df_jp_clean.to_csv("articles/jp999_mapped_"+str(k)+".csv",index=False)
+		df_jp_clean=pd.read_csv("articles/jp999_mapped_"+str(k)+".csv").ix[random_number].reset_index()
+		df_jp_clean['transformation_jp']=df_jp_clean['transformation_jp'].apply(lambda x:ast.literal_eval(x))
+
+		# Call conter_to_vector()
+		df_en_clean['f_vector']=df_en_clean['transformation_en'].apply(conter_to_vector)
+		df_en_clean['f_vector']=df_en_clean['f_vector'].apply(lambda x:x.values())
+
+		df_jp_clean['f_vector']=df_jp_clean['transformation_jp'].apply(conter_to_vector)
+		df_jp_clean['f_vector']=df_jp_clean['f_vector'].apply(lambda x:x.values())
+
+		# Call map_to_jp_vector()
+		df_en_clean['en2jp_projection']=\
+			df_en_clean['f_vector'].apply(map_to_jp_vector,args=(df_mapping,))
+
+		#------------------
+		# EN: Normalize the en_to_jp_projection
+		df_en_clean['en2jp_projection_norm']=\
+			df_en_clean['en2jp_projection'].apply(getVector.vecNorm)
+
+		# JP: Normalize the f_vector
+		df_jp_clean['f_vector_norm']=\
+			df_jp_clean['f_vector'].apply(getVector.vecNorm)
+
+		#------------------
+		# Normalize the en_to_jp_projection
+		df_en_vector_matrix=df_en_clean['en2jp_projection_norm'].apply(pd.Series)
+
+		# Normalize the en_to_jp_projection
+		df_jp_vector_matrix=df_jp_clean['f_vector_norm'].apply(pd.Series)
+
+		# Calculate the most similar Japanese article
+		similarity_matrix_jp=\
+			np.array(df_en_vector_matrix).dot(np.array(df_jp_vector_matrix).T)
+
+		prediction_jp=similarity_matrix_jp.argmax(axis=1) # --> maximum inddex for each row
+
+		df_result=pd.DataFrame(df_en_clean['en_article'])
+		df_result['prediction_jp_name']=pd.Series(prediction_jp)
+		df_result['prediction_jp_article']=df_jp_clean.ix[prediction_jp].reset_index().jp_article
+		
+		# Sequencial version (head: n_rows)
+		df_result['real_jp_name']=pd.Series(range(0,n_rows))
+
+		df_result['real_jp_article']=df_jp_clean.jp_article
+		df_result['evaluation']=(df_result.prediction_jp_name==df_result.real_jp_name)
+
+		# print "The accuracy is ",df_result.evaluation.value_counts()
+
+		df_accuracy[index_test]=df_result.evaluation.value_counts()
+	return df_accuracy
+
 
 
 if __name__ == "__main__":
@@ -165,14 +231,17 @@ if __name__ == "__main__":
 
 	# df_en_clean['transformation_en']=\
 	# 	df_en_clean.en_article.apply(mapping_artile,args=(model_en,wnl))
-	# df_en_clean.to_csv("articles/en999_mapped.csv",index=False)
-	df_en_clean=pd.read_csv("articles/en999_mapped.csv",nrows=n_rows)
+	# df_en_clean.to_csv("articles/en999_mapped_"+str(k)+".csv",index=False)
+	df_en_clean=pd.read_csv("articles/en999_mapped_"+str(k)+".csv").sample(n_rows).reset_index()
 	df_en_clean['transformation_en']=df_en_clean['transformation_en'].apply(lambda x:ast.literal_eval(x))
+	random_number=df_en_clean['index']
+	# print "The random English article number: "
+	# print random_number
 
 	# df_jp_clean['transformation_jp']=\
-	# 	df_jp_clean.jp_article.apply(mapping_artile,args=(model_jp,wnl))
-	# df_jp_clean.to_csv("articles/jp999_mapped.csv",index=False)
-	df_jp_clean=pd.read_csv("articles/jp999_mapped.csv",nrows=n_rows)
+		# df_jp_clean.jp_article.apply(mapping_artile,args=(model_jp,wnl))
+	# df_jp_clean.to_csv("articles/jp999_mapped_"+str(k)+".csv",index=False)
+	df_jp_clean=pd.read_csv("articles/jp999_mapped_"+str(k)+".csv").ix[random_number].reset_index()
 	df_jp_clean['transformation_jp']=df_jp_clean['transformation_jp'].apply(lambda x:ast.literal_eval(x))
 
 	# Call conter_to_vector()
@@ -208,14 +277,26 @@ if __name__ == "__main__":
 
 	prediction_jp=similarity_matrix_jp.argmax(axis=1) # --> maximum inddex for each row
 
-	df_result=df_en.copy()
+	df_result=pd.DataFrame(df_en_clean['en_article'])
 	df_result['prediction_jp_name']=pd.Series(prediction_jp)
 	df_result['prediction_jp_article']=df_jp_clean.ix[prediction_jp].reset_index().jp_article
+	
+	# Sequencial version (head: n_rows)
 	df_result['real_jp_name']=pd.Series(range(0,n_rows))
+
 	df_result['real_jp_article']=df_jp_clean.jp_article
 	df_result['evaluation']=(df_result.prediction_jp_name==df_result.real_jp_name)
 
 	print "The accuracy is ",df_result.evaluation.value_counts() 
 	output_unmatch.close()	
+
+	# Accuray calculation
+	df_accuracy=pd.DataFrame(df_result.evaluation.value_counts())
+	df_accuracy_final=repeat_test(df_accuracy,repeat,df_mapping)
+	print df_accuracy_final
+	print df_accuracy.sum(axis=1)
+	print "the accuracy is: "
+	print df_accuracy.sum(axis=1).ix[1]/df_accuracy.sum(axis=1).ix[0]*100,"%"
+
 	print("--- %s seconds ---" % 
 		(time.time() - start_time))

@@ -12,7 +12,7 @@ pd.set_option('display.width', 1000)
 
 start_time = time.time()
 
-k = 20
+k = 10
 # output_dir='output/cluster-scikit/'
 output_dir='output/cluster-skmeans/'
 

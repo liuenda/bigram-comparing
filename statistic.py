@@ -12,7 +12,7 @@ from itertools import combinations
 # sys.stdout = open('file.txt', 'w')
 
 # Global Variables
-k = 20
+k = 25
 # output_dir='output/'
 # output_dir='output/cluster-scikit/'
 output_dir='output/cluster-skmeans/'
