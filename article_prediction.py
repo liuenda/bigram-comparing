@@ -19,11 +19,11 @@ start_time = time.time()
 # pd.set_option('display.width', 200)
 # pd.reset_option('all')
 
-k=20
+k=10
 dim=200
 nan=np.empty(dim)
-n_rows=20
-repeat=20
+n_rows=40
+repeat=50
 
 input_article_en='articles/en999.txt'
 input_article_jp='articles/jp999.txt'
@@ -138,9 +138,9 @@ def map_to_jp_vector(vector_en,df_mapping):
 		# print "DEBUG: index=",index
 		# print "DEBUG: frequency=",frequency
 		# Get the mapping information for cluster 1, mapping=(15,7,3,1)
-		mapping=df_mapping.ix[index].mapping_parsed
+		mapping=df_mapping.iloc[index].mapping_parsed
 		# print "DEBUG: mapping=",mapping
-		similarity=df_mapping.ix[index].max_similarity
+		similarity=df_mapping.iloc[index].max_similarity
 		# print "DEBUG: similarity=",similarity
 		# For each element in the mapping, such as the cluster_name=15
 		for cluster_name in mapping:
@@ -160,7 +160,7 @@ def repeat_test(df_accuray,repeat,df_mapping):
 		# df_jp_clean['transformation_jp']=\
 			# df_jp_clean.jp_article.apply(mapping_artile,args=(model_jp,wnl))
 		# df_jp_clean.to_csv("articles/jp999_mapped_"+str(k)+".csv",index=False)
-		df_jp_clean=pd.read_csv("articles/jp999_mapped_"+str(k)+".csv").ix[random_number].reset_index()
+		df_jp_clean=pd.read_csv("articles/jp999_mapped_"+str(k)+".csv").iloc[random_number].reset_index()
 		df_jp_clean['transformation_jp']=df_jp_clean['transformation_jp'].apply(lambda x:ast.literal_eval(x))
 
 		# Call conter_to_vector()
@@ -198,7 +198,7 @@ def repeat_test(df_accuray,repeat,df_mapping):
 
 		df_result=pd.DataFrame(df_en_clean['en_article'])
 		df_result['prediction_jp_name']=pd.Series(prediction_jp)
-		df_result['prediction_jp_article']=df_jp_clean.ix[prediction_jp].reset_index().jp_article
+		df_result['prediction_jp_article']=df_jp_clean.iloc[prediction_jp].reset_index().jp_article
 		
 		# Sequencial version (head: n_rows)
 		df_result['real_jp_name']=pd.Series(range(0,n_rows))
@@ -241,7 +241,7 @@ if __name__ == "__main__":
 	# df_jp_clean['transformation_jp']=\
 		# df_jp_clean.jp_article.apply(mapping_artile,args=(model_jp,wnl))
 	# df_jp_clean.to_csv("articles/jp999_mapped_"+str(k)+".csv",index=False)
-	df_jp_clean=pd.read_csv("articles/jp999_mapped_"+str(k)+".csv").ix[random_number].reset_index()
+	df_jp_clean=pd.read_csv("articles/jp999_mapped_"+str(k)+".csv").iloc[random_number].reset_index()
 	df_jp_clean['transformation_jp']=df_jp_clean['transformation_jp'].apply(lambda x:ast.literal_eval(x))
 
 	# Call conter_to_vector()
@@ -279,7 +279,7 @@ if __name__ == "__main__":
 
 	df_result=pd.DataFrame(df_en_clean['en_article'])
 	df_result['prediction_jp_name']=pd.Series(prediction_jp)
-	df_result['prediction_jp_article']=df_jp_clean.ix[prediction_jp].reset_index().jp_article
+	df_result['prediction_jp_article']=df_jp_clean.iloc[prediction_jp].reset_index().jp_article
 	
 	# Sequencial version (head: n_rows)
 	df_result['real_jp_name']=pd.Series(range(0,n_rows))
@@ -291,12 +291,14 @@ if __name__ == "__main__":
 	output_unmatch.close()	
 
 	# Accuray calculation
-	df_accuracy=pd.DataFrame(df_result.evaluation.value_counts())
+	df_accuracy = pd.DataFrame(index=[False,True])
+	df_accuracy['base']=pd.DataFrame(df_result.evaluation.value_counts())
 	df_accuracy_final=repeat_test(df_accuracy,repeat,df_mapping)
 	print df_accuracy_final
 	print df_accuracy.sum(axis=1)
 	print "the accuracy is: "
-	print df_accuracy.sum(axis=1).ix[1]/df_accuracy.sum(axis=1).ix[0]*100,"%"
+	print df_accuracy.sum(axis=1).iloc[1]/df_accuracy.sum(axis=1).iloc[0]*100,"%"
+	print "maximum prediction level: ",df_accuracy.iloc[1].max()
 
 	print("--- %s seconds ---" % 
 		(time.time() - start_time))
