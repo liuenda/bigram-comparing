@@ -19,10 +19,10 @@ start_time = time.time()
 # pd.set_option('display.width', 200)
 # pd.reset_option('all')
 
-k=10
+k=30
 dim=200
 nan=np.empty(dim)
-n_rows=40
+n_rows=20
 repeat=50
 
 input_article_en='articles/en999.txt'
@@ -143,13 +143,14 @@ def map_to_jp_vector(vector_en,df_mapping):
 		similarity=df_mapping.iloc[index].max_similarity
 		# print "DEBUG: similarity=",similarity
 		# For each element in the mapping, such as the cluster_name=15
+		# similarity=1
 		for cluster_name in mapping:
 			# print "DEBUG: cluster_name=",cluster_name
 			vector_jp[cluster_name-1]+=similarity*frequency
 			# print "DEBUG: vector_jp=",vector_jp
 	return vector_jp
 
-def repeat_test(df_accuray,repeat,df_mapping):
+def repeat_test(df_accuracy,df_accuracy_top5,repeat,df_mapping):
 	for index_test,test in enumerate(range(0,repeat)):
 		df_en_clean=pd.read_csv("articles/en999_mapped_"+str(k)+".csv").sample(n_rows).reset_index()
 		df_en_clean['transformation_en']=df_en_clean['transformation_en'].apply(lambda x:ast.literal_eval(x))
@@ -194,7 +195,11 @@ def repeat_test(df_accuray,repeat,df_mapping):
 		similarity_matrix_jp=\
 			np.array(df_en_vector_matrix).dot(np.array(df_jp_vector_matrix).T)
 
+		# @top1
 		prediction_jp=similarity_matrix_jp.argmax(axis=1) # --> maximum inddex for each row
+
+		# @top5
+		prediction_jp_top5=similarity_matrix_jp.argsort(axis=1)[:,-5:]
 
 		df_result=pd.DataFrame(df_en_clean['en_article'])
 		df_result['prediction_jp_name']=pd.Series(prediction_jp)
@@ -206,10 +211,19 @@ def repeat_test(df_accuray,repeat,df_mapping):
 		df_result['real_jp_article']=df_jp_clean.jp_article
 		df_result['evaluation']=(df_result.prediction_jp_name==df_result.real_jp_name)
 
-		# print "The accuracy is ",df_result.evaluation.value_counts()
+		# @top5
+		df_result['prediction_jp_top5_name']=pd.Series(prediction_jp_top5.tolist())
+		df_result['evaluation_top5']=\
+			df_result.real_jp_name.apply(lambda x,y:(x in y.iloc[x]),args=(df_result.prediction_jp_top5_name,))
 
+
+		# print "The expectation is ",df_result.evaluation.value_counts()
+		# @top1
 		df_accuracy[index_test]=df_result.evaluation.value_counts()
-	return df_accuracy
+		# @top5
+		df_accuracy_top5[index_test]=df_result.evaluation_top5.value_counts()
+
+	return df_accuracy,df_accuracy_top5
 
 
 
@@ -275,30 +289,57 @@ if __name__ == "__main__":
 	similarity_matrix_jp=\
 		np.array(df_en_vector_matrix).dot(np.array(df_jp_vector_matrix).T)
 
+	# @top1
 	prediction_jp=similarity_matrix_jp.argmax(axis=1) # --> maximum inddex for each row
+
+	# @top5
+	prediction_jp_top5=similarity_matrix_jp.argsort(axis=1)[:,-5:]
 
 	df_result=pd.DataFrame(df_en_clean['en_article'])
 	df_result['prediction_jp_name']=pd.Series(prediction_jp)
 	df_result['prediction_jp_article']=df_jp_clean.iloc[prediction_jp].reset_index().jp_article
-	
+
+
 	# Sequencial version (head: n_rows)
 	df_result['real_jp_name']=pd.Series(range(0,n_rows))
 
 	df_result['real_jp_article']=df_jp_clean.jp_article
 	df_result['evaluation']=(df_result.prediction_jp_name==df_result.real_jp_name)
 
-	print "The accuracy is ",df_result.evaluation.value_counts() 
+	# @top5
+	df_result['prediction_jp_top5_name']=pd.Series(prediction_jp_top5.tolist())
+	df_result['evaluation_top5']=\
+		df_result.real_jp_name.apply(lambda x,y:(x in y.iloc[x]),args=(df_result.prediction_jp_top5_name,))
+
+	print "The expectation is ",df_result.evaluation.value_counts() 
 	output_unmatch.close()	
 
-	# Accuray calculation
+	# @ top1 Accuracy calculation
 	df_accuracy = pd.DataFrame(index=[False,True])
 	df_accuracy['base']=pd.DataFrame(df_result.evaluation.value_counts())
-	df_accuracy_final=repeat_test(df_accuracy,repeat,df_mapping)
+	
+	# @top5 Accuracy calculation
+	df_accuracy_top5 = pd.DataFrame(index=[False,True])
+	df_accuracy_top5['base']=pd.DataFrame(df_result.evaluation_top5.value_counts())
+
+	# Repeat the test 
+	df_accuracy_final, df_accuracy_top5_final=repeat_test(df_accuracy,df_accuracy_top5,repeat,df_mapping)
+
+	# print out the results
 	print df_accuracy_final
 	print df_accuracy.sum(axis=1)
-	print "the accuracy is: "
-	print df_accuracy.sum(axis=1).iloc[1]/df_accuracy.sum(axis=1).iloc[0]*100,"%"
+	print "the expectation is: "
+	# print df_accuracy.sum(axis=1).iloc[1]/df_accuracy.sum(axis=1).iloc[0]*100,"%"
+	print df_accuracy.sum(axis=1).iloc[1]/(repeat)	
 	print "maximum prediction level: ",df_accuracy.iloc[1].max()
+
+		# print out the results
+	print df_accuracy_top5_final
+	print df_accuracy_top5.sum(axis=1)
+	print "the expectation is: "
+	# print df_accuracy.sum(axis=1).iloc[1]/df_accuracy.sum(axis=1).iloc[0]*100,"%"
+	print df_accuracy_top5.sum(axis=1).iloc[1]/(repeat)	
+	print "maximum prediction level: ",df_accuracy_top5.iloc[1].max()
 
 	print("--- %s seconds ---" % 
 		(time.time() - start_time))
