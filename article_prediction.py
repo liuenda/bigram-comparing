@@ -22,7 +22,7 @@ start_time = time.time()
 k=30
 dim=200
 nan=np.empty(dim)
-n_rows=20
+n_rows=5
 repeat=50
 
 input_article_en='articles/en999.txt'
@@ -330,7 +330,7 @@ if __name__ == "__main__":
 	print df_accuracy.sum(axis=1)
 	print "the expectation is: "
 	# print df_accuracy.sum(axis=1).iloc[1]/df_accuracy.sum(axis=1).iloc[0]*100,"%"
-	print df_accuracy.sum(axis=1).iloc[1]/(repeat)	
+	print df_accuracy.sum(axis=1).iloc[1]/(repeat+1)	
 	print "maximum prediction level: ",df_accuracy.iloc[1].max()
 
 		# print out the results
@@ -338,7 +338,7 @@ if __name__ == "__main__":
 	print df_accuracy_top5.sum(axis=1)
 	print "the expectation is: "
 	# print df_accuracy.sum(axis=1).iloc[1]/df_accuracy.sum(axis=1).iloc[0]*100,"%"
-	print df_accuracy_top5.sum(axis=1).iloc[1]/(repeat)	
+	print df_accuracy_top5.sum(axis=1).iloc[1]/(repeat+1)	
 	print "maximum prediction level: ",df_accuracy_top5.iloc[1].max()
 
 	print("--- %s seconds ---" % 
