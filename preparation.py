@@ -2,7 +2,7 @@
 import time
 import pandas as pd
 import getVector
-import cross_check
+import cross_checke
 import numpy as np
 
 

@@ -6,7 +6,7 @@ from sklearn.cluster import KMeans
 from spherical_kmeans import SphericalKMeans
 start_time = time.time()
 np.random.seed(42)
-k= 25
+k= 40
 output_dir='output/cluster-skmeans/'
 
 def read_vecs(lang_name):

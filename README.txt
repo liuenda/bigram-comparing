@@ -1,4 +1,22 @@
-﻿2016/8/22
+﻿2016/8/28
+. 从github中删除baseline.py
+.运行顺序1(准备工作)：
+	. preparation.py
+	. clustering_skmeans.py (cluster_jp_en.r / spherical_kmeans.py)
+	. statistic.py
+. 运行顺序2：
+	. experiment.py： word2word mapping，有两种方法
+		..baseline()
+		..proposal() 
+	. articile_text.py
+. 辅助脚本：
+	. probability_test.py() 测试在baseline随机情况下的mapping的期望值
+. 函数脚本：不直接运行，只被调用
+	. cross_check.py
+	. getVector.py
+	. spherical_kmeans.py
+
+2016/8/22
 . 添加了top1的期望值计算
 . 添加了多次试验结果求平均的Repeat()模块
 . 添加了top5的期望值计算

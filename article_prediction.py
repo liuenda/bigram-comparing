@@ -19,10 +19,11 @@ start_time = time.time()
 # pd.set_option('display.width', 200)
 # pd.reset_option('all')
 
+top5=5
 k=30
 dim=200
 nan=np.empty(dim)
-n_rows=5
+n_rows=10
 repeat=50
 
 input_article_en='articles/en999.txt'
@@ -199,7 +200,7 @@ def repeat_test(df_accuracy,df_accuracy_top5,repeat,df_mapping):
 		prediction_jp=similarity_matrix_jp.argmax(axis=1) # --> maximum inddex for each row
 
 		# @top5
-		prediction_jp_top5=similarity_matrix_jp.argsort(axis=1)[:,-5:]
+		prediction_jp_top5=similarity_matrix_jp.argsort(axis=1)[:,-top5:]
 
 		df_result=pd.DataFrame(df_en_clean['en_article'])
 		df_result['prediction_jp_name']=pd.Series(prediction_jp)
@@ -253,7 +254,7 @@ if __name__ == "__main__":
 	# print random_number
 
 	# df_jp_clean['transformation_jp']=\
-		# df_jp_clean.jp_article.apply(mapping_artile,args=(model_jp,wnl))
+	# 	df_jp_clean.jp_article.apply(mapping_artile,args=(model_jp,wnl))
 	# df_jp_clean.to_csv("articles/jp999_mapped_"+str(k)+".csv",index=False)
 	df_jp_clean=pd.read_csv("articles/jp999_mapped_"+str(k)+".csv").iloc[random_number].reset_index()
 	df_jp_clean['transformation_jp']=df_jp_clean['transformation_jp'].apply(lambda x:ast.literal_eval(x))
@@ -293,7 +294,7 @@ if __name__ == "__main__":
 	prediction_jp=similarity_matrix_jp.argmax(axis=1) # --> maximum inddex for each row
 
 	# @top5
-	prediction_jp_top5=similarity_matrix_jp.argsort(axis=1)[:,-5:]
+	prediction_jp_top5=similarity_matrix_jp.argsort(axis=1)[:,-top5:]
 
 	df_result=pd.DataFrame(df_en_clean['en_article'])
 	df_result['prediction_jp_name']=pd.Series(prediction_jp)

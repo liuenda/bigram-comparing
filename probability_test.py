@@ -5,6 +5,7 @@ import time
 start_time = time.time()
 
 k=10
+top=5
 repeat=10000
 df_accuracy = pd.DataFrame(index=[False,True])
 for i,x in enumerate(range(0,repeat)):
@@ -20,3 +21,4 @@ print df_accuracy.sum(axis=1).iloc[1]/repeat
 print "maximum prediction level: ",df_accuracy.iloc[1].max()
 print("--- %s seconds ---" % 
 	(time.time() - start_time))
+
